@@ -5,13 +5,15 @@ PGraphics graphic;
 
 float t = 0;
 PVector[] constants;
-final int WIDTH = 800;
-final int HEIGHT = 800;
-final float TIME_SCALE = 0.01;
+final int WIDTH = 1200;
+final int HEIGHT = 1200;
+final float TIME_SCALE = 0.04;
 
 float deltaTime;
 long time;
 
+PVector prev_point_graphic = null;
+  
 void settings()
 {
   size(WIDTH,HEIGHT);
@@ -19,21 +21,15 @@ void settings()
 
 void setup()
 {
-  //constants = new PVector[2];
-  //constants[0] = new PVector(7.07,7.07);
-  //constants[1] = new PVector(7.07,7.07);
   time = millis();
   
   RG.init(this);
   RShape s = RG.loadShape("ltcemoji.svg");
   points = s.getPoints();
-  constants = DiscreteFourierTransform(points, 2000);
+  constants = DiscreteFourierTransform(points, 1500);
   
   frameRate(600);
   graphic = createGraphics(WIDTH,HEIGHT);
-  //graphic.beginDraw();
-  //graphic.background(0);
-  //graphic.endDraw();
 }
 
 void draw()
@@ -46,19 +42,17 @@ void draw()
   background(0);
   image(graphic,0,0);
   graphic.beginDraw();
-  //graphic.scale(2);
-  //scale(4);
+  graphic.scale(2);
+  scale(2);
   //translate(WIDTH/2,HEIGHT/2);
-  PVector prev_point = new PVector(0,0);
-  PVector cur_point = new PVector(0,0);
   graphic.noFill();
   graphic.stroke(255);
-  
   noFill();
   stroke(220,10,50,100);
   
-  //t += deltaTime * TIME_SCALE;
   t += 0.01666 * TIME_SCALE;
+  PVector prev_point = new PVector(0,0);
+  PVector cur_point = new PVector(0,0);
   for (int i = 0; i < constants.length; i++)
   {
     prev_point.x = cur_point.x;
@@ -74,7 +68,14 @@ void draw()
     line(prev_point.x, prev_point.y, cur_point.x, cur_point.y);
     ellipse(prev_point.x,prev_point.y,d,d);
   }
-  //scale(0.5);
-  graphic.ellipse(cur_point.x,cur_point.y,1,1);
+  if (prev_point_graphic != null)
+    graphic.line(prev_point_graphic.x, prev_point_graphic.y, cur_point.x, cur_point.y);
+  else
+    prev_point_graphic = new PVector(0,0);
+  prev_point_graphic.x = cur_point.x;
+  prev_point_graphic.y = cur_point.y;
+    
+  scale(0.5);
+  //graphic.ellipse(cur_point.x,cur_point.y,1,1);
   graphic.endDraw();
 }

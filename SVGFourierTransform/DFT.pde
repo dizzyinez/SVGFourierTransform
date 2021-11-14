@@ -13,9 +13,11 @@ PVector[] DiscreteFourierTransform(RPoint[] rpoints, int resolution)
       point.x = rpoints[n].x;
       point.y = rpoints[n].y;
       PVector bit = complexMul(eulerIdentity(2.f * PI * (float)idToFrequency(k) * (float)n / (float)rpoints.length),point);
-      x_k.x += bit.x / (float)rpoints.length;
-      x_k.y += bit.y / (float)rpoints.length;
+      x_k.x += bit.x;
+      x_k.y += bit.y;
     }
+    x_k.x /= (float)rpoints.length;
+    x_k.y /= (float)rpoints.length;
     ret[k] = x_k;
   }
   return ret;
